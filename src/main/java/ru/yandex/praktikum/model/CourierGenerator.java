@@ -9,4 +9,5 @@ public class CourierGenerator {
         String firstName = RandomStringUtils.randomAlphabetic(10);
         return new Courier(login, password, firstName);
     }
+
 }

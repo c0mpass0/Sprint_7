@@ -15,6 +15,7 @@ import ru.yandex.praktikum.model.CourierGenerator;
 
 import static org.apache.http.HttpStatus.SC_CREATED;
 import static org.apache.http.HttpStatus.SC_CONFLICT;
+import static org.apache.http.HttpStatus.SC_BAD_REQUEST;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 
@@ -68,5 +69,31 @@ public class CourierTest {
                 .and()
                 .assertThat()
                 .body("message", is("Этот логин уже используется"));
+    }
+
+    @Test
+    public void courierCantBeCreatedWithoutLogin() {
+        Courier courier = CourierGenerator.getRandom();
+        courier.setLogin("");
+
+        courierClient.create(courier)
+                .assertThat()
+                .statusCode(SC_BAD_REQUEST)
+                .and()
+                .assertThat()
+                .body("message", is("Недостаточно данных для создания учетной записи"));
+    }
+
+    @Test
+    public void courierCantBeCreatedWithoutPassword() {
+        Courier courier = CourierGenerator.getRandom();
+        courier.setPassword("");
+
+        courierClient.create(courier)
+                .assertThat()
+                .statusCode(SC_BAD_REQUEST)
+                .and()
+                .assertThat()
+                .body("message", is("Недостаточно данных для создания учетной записи"));
     }
 }
