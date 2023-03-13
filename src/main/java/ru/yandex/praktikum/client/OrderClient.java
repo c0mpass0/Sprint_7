@@ -30,4 +30,13 @@ public class OrderClient extends ScooterRestClient {
                 .put(ORDER_URI + "cancel/")
                 .then();
     }
+
+    @Step("Get list of orders")
+    public ValidatableResponse getOrdersList(){
+        return given()
+                .spec(getBaseReqSpec())
+                .when()
+                .get(ORDER_URI)
+                .then();
+    }
 }

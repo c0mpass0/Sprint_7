@@ -45,7 +45,7 @@ public class OrderTest {
         this.comment = comment;
     }
 
-    @Parameterized.Parameters(name = "Тестовые данные заказа: {0} {1}")
+    @Parameterized.Parameters(name = "Тестовые данные заказа: {0} {1} {2} {3} {4} {5} {6} {7}")
     public static Object[][] getSumData() {
         return new Object[][]{
                 {"Самец", "Васильевич", "Небоусова дом 3 кв 15", "Черепановская", "984513513", 2, "2023-06-06", "Коммент!"},
@@ -69,13 +69,41 @@ public class OrderTest {
     }
 
     @After
-    public void clearData(){
+    public void clearData() {
         orderClient.delete(track);
     }
 
     @Test
-    public void createOrderHappyPath(){
+    public void createOrderWithRequiredFields(){
+        Order order = new Order(firstName, lastName, address, metroStation, phone, rentTime, deliveryDate, comment);
+
+        track = orderClient.create(order)
+                .assertThat()
+                .statusCode(SC_CREATED)
+                .and()
+                .assertThat()
+                .body("track", notNullValue())
+                .extract().path("track");
+    }
+
+    @Test
+    public void createOrderWithSingleColor(){
         colors.add("BLACK");
+        Order order = new Order(firstName, lastName, address, metroStation, phone, rentTime, deliveryDate, comment, colors);
+
+        track = orderClient.create(order)
+                .assertThat()
+                .statusCode(SC_CREATED)
+                .and()
+                .assertThat()
+                .body("track", notNullValue())
+                .extract().path("track");
+    }
+
+    @Test
+    public void createOrderWithMultipleColors(){
+        colors.add("BLACK");
+        colors.add("GRAY");
         Order order = new Order(firstName, lastName, address, metroStation, phone, rentTime, deliveryDate, comment, colors);
 
         track = orderClient.create(order)
