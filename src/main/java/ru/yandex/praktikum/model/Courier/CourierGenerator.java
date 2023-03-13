@@ -1,4 +1,4 @@
-package ru.yandex.praktikum.model;
+package ru.yandex.praktikum.model.Courier;
 
 import org.apache.commons.lang3.RandomStringUtils;
 
