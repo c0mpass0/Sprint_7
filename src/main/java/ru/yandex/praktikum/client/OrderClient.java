@@ -3,7 +3,7 @@ package ru.yandex.praktikum.client;
 import io.qameta.allure.Step;
 import io.restassured.response.ValidatableResponse;
 import ru.yandex.praktikum.client.base.ScooterRestClient;
-import ru.yandex.praktikum.model.Order.Order;
+import ru.yandex.praktikum.model.order.Order;
 
 import static io.restassured.RestAssured.given;
 

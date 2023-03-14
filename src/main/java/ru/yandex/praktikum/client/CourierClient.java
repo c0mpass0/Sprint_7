@@ -3,8 +3,8 @@ package ru.yandex.praktikum.client;
 import io.qameta.allure.Step;
 import io.restassured.response.ValidatableResponse;
 import ru.yandex.praktikum.client.base.ScooterRestClient;
-import ru.yandex.praktikum.model.Courier.Courier;
-import ru.yandex.praktikum.model.Courier.CourierCredentials;
+import ru.yandex.praktikum.model.courier.Courier;
+import ru.yandex.praktikum.model.courier.CourierCredentials;
 
 import static io.restassured.RestAssured.given;
 

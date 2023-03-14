@@ -1,17 +1,19 @@
 package ru.yandex.praktikum;
 
+import io.qameta.allure.junit4.DisplayName;
 import io.qameta.allure.restassured.AllureRestAssured;
 import io.restassured.RestAssured;
 import io.restassured.filter.log.RequestLoggingFilter;
 import io.restassured.filter.log.ResponseLoggingFilter;
+import io.restassured.response.ValidatableResponse;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import ru.yandex.praktikum.client.CourierClient;
-import ru.yandex.praktikum.model.Courier.Courier;
-import ru.yandex.praktikum.model.Courier.CourierCredentials;
-import ru.yandex.praktikum.model.Courier.CourierGenerator;
+import ru.yandex.praktikum.model.courier.Courier;
+import ru.yandex.praktikum.model.courier.CourierCredentials;
+import ru.yandex.praktikum.model.courier.CourierGenerator;
 
 import static org.apache.http.HttpStatus.SC_CREATED;
 import static org.apache.http.HttpStatus.SC_CONFLICT;
@@ -43,15 +45,25 @@ public class CourierTest {
     }
 
     @Test
-    public void courierCanBeCreatedAndLogInWithValidData() {
+    @DisplayName("Создание курьера с валидными данными")
+    public void courierCanBeCreatedWithValidData() {
         Courier courier = CourierGenerator.getRandom();
 
-        courierClient.create(courier)
-                .assertThat()
+        ValidatableResponse createResponse = courierClient.create(courier);
+        courierId = courierClient.login(CourierCredentials.from(courier)).extract().path("id");
+
+        createResponse.assertThat()
                 .statusCode(SC_CREATED)
                 .and()
                 .assertThat()
                 .body("ok", is(true));
+    }
+    @Test
+    @DisplayName("Авторизация под успешно созданным курьером")
+    public void courierCanBeCreatedAndLogInWithValidData() {
+        Courier courier = CourierGenerator.getRandom();
+
+        courierClient.create(courier);
 
         courierId = courierClient.login(CourierCredentials.from(courier))
                 .assertThat()
@@ -60,6 +72,7 @@ public class CourierTest {
 
     }
     @Test
+    @DisplayName("Создание курьера с уже существующими данными")
     public void courierCantBeCreatedWithSimilarData() {
         Courier courier = CourierGenerator.getRandom();
 
@@ -73,6 +86,7 @@ public class CourierTest {
     }
 
     @Test
+    @DisplayName("Создание курьера без логина")
     public void courierCantBeCreatedWithoutLogin() {
         Courier courier = CourierGenerator.getRandom();
         courier.setLogin("");
@@ -86,6 +100,7 @@ public class CourierTest {
     }
 
     @Test
+    @DisplayName("Создание курьера без пароля")
     public void courierCantBeCreatedWithoutPassword() {
         Courier courier = CourierGenerator.getRandom();
         courier.setPassword("");
@@ -99,15 +114,11 @@ public class CourierTest {
     }
 
     @Test
+    @DisplayName("Авторизация курьера без логина")
     public void courierCantLogInWithoutLogin() {
         Courier courier = CourierGenerator.getRandom();
 
-        courierClient.create(courier)
-                .assertThat()
-                .statusCode(SC_CREATED)
-                .and()
-                .assertThat()
-                .body("ok", is(true));
+        courierClient.create(courier);
         courier.setLogin("");
 
         courierClient.login(CourierCredentials.from(courier))
@@ -120,15 +131,11 @@ public class CourierTest {
     }
 
     @Test
+    @DisplayName("Авторизация курьера без пароля")
     public void courierCantLogInWithoutPassword() {
         Courier courier = CourierGenerator.getRandom();
 
-        courierClient.create(courier)
-                .assertThat()
-                .statusCode(SC_CREATED)
-                .and()
-                .assertThat()
-                .body("ok", is(true));
+        courierClient.create(courier);
         courier.setPassword("");
 
         courierClient.login(CourierCredentials.from(courier))
@@ -141,15 +148,11 @@ public class CourierTest {
     }
 
     @Test
+    @DisplayName("Авторизация с несуществующим логином")
     public void courierCantLogInWithNonExistentLogin() {
         Courier courier = CourierGenerator.getRandom();
 
-        courierClient.create(courier)
-                .assertThat()
-                .statusCode(SC_CREATED)
-                .and()
-                .assertThat()
-                .body("ok", is(true));
+        courierClient.create(courier);
         courier.setLogin(courier.getLogin() + "Test");
 
         courierClient.login(CourierCredentials.from(courier))
@@ -162,15 +165,11 @@ public class CourierTest {
     }
 
     @Test
+    @DisplayName("Авторизация курьера с неправильным паролем")
     public void courierCantLogInWithWrongPassword() {
         Courier courier = CourierGenerator.getRandom();
 
-        courierClient.create(courier)
-                .assertThat()
-                .statusCode(SC_CREATED)
-                .and()
-                .assertThat()
-                .body("ok", is(true));
+        courierClient.create(courier);
         courier.setPassword(courier.getPassword() + "Test");
 
         courierClient.login(CourierCredentials.from(courier))

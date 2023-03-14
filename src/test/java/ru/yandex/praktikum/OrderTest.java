@@ -11,7 +11,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import ru.yandex.praktikum.client.OrderClient;
-import ru.yandex.praktikum.model.Order.Order;
+import ru.yandex.praktikum.model.order.Order;
 
 import java.util.ArrayList;
 
@@ -52,8 +52,6 @@ public class OrderTest {
                 {"Самка", "Васильевна", "Небоусова дом 3 кв 15", "Черепановская", "984513513", 2, "2023-06-06", "Коммент!"},
         };
     }
-
-
 
     @BeforeClass
     public static void globalSetUp() {
